@@ -15,6 +15,7 @@
  */
 
 package jackpal.androidterm;
+
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -29,8 +30,7 @@ import java.lang.reflect.Field;
 /**
  * Utility methods for managing a pty file descriptor.
  */
-public class Exec
-{
+public class Exec {
     // Warning: bump the library revision, when an incompatible change happens
     static {
         System.loadLibrary("jackpal-androidterm5");

@@ -98,7 +98,6 @@ public class TermService extends Service implements TermSession.FinishCallback {
             notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             Notification mNotification = new Notification.Builder(this)
-                    .setAutoCancel(true)
                     .setContentTitle(getText(R.string.application_terminal))
                     .setContentText(getText(R.string.service_notify_text))
                     .setContentIntent(contentIntent)

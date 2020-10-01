@@ -23,19 +23,19 @@ import jackpal.androidterm.emulatorview.compat.AndroidCompat;
 
 /**
  * A backing store for a TranscriptScreen.
- *
+ * <p>
  * The text is stored as a circular buffer of rows.  There are two types of
  * row:
  * - "basic", which is a char[] array used to store lines which consist
- *   entirely of regular-width characters (no combining characters, zero-width
- *   characters, East Asian double-width characters, etc.) in the BMP; and
+ * entirely of regular-width characters (no combining characters, zero-width
+ * characters, East Asian double-width characters, etc.) in the BMP; and
  * - "full", which is a char[] array with extra trappings which can be used to
- *   store a line containing any valid Unicode sequence.  An array of short[]
- *   is used to store the "offset" at which each column starts; for example,
- *   if column 20 starts at index 23 in the array, then mOffset[20] = 3.
- *
+ * store a line containing any valid Unicode sequence.  An array of short[]
+ * is used to store the "offset" at which each column starts; for example,
+ * if column 20 starts at index 23 in the array, then mOffset[20] = 3.
+ * <p>
  * Style information is stored in a separate circular buffer of StyleRows.
- *
+ * <p>
  * Rows are allocated on demand, when a character is first stored into them.
  * A "basic" row is allocated unless the store which triggers the allocation
  * requires a "full" row.  "Basic" rows are converted to "full" rows when
@@ -100,12 +100,12 @@ class UnicodeTranscript {
      *
      * @param extRow a row in the external coordinate system.
      * @return The row corresponding to the input argument in the private
-     *         coordinate system.
+     * coordinate system.
      */
     private int externalToInternalRow(int extRow) {
         if (extRow < -mActiveTranscriptRows || extRow > mScreenRows) {
-            String errorMessage = "externalToInternalRow "+ extRow +
-                " " + mScreenRows + " " + mActiveTranscriptRows;
+            String errorMessage = "externalToInternalRow " + extRow +
+                    " " + mScreenRows + " " + mActiveTranscriptRows;
             Log.e(TAG, errorMessage);
             throw new IllegalArgumentException(errorMessage);
         }
@@ -134,14 +134,14 @@ class UnicodeTranscript {
      * only works if the number of columns does not change.
      *
      * @param newColumns The number of columns the screen should have.
-     * @param newRows The number of rows the screen should have.
-     * @param cursor An int[2] containing the current cursor location; if the
-     *        resize succeeds, this will be updated with the new cursor
-     *        location.  If null, don't do cursor-position-dependent tasks such
-     *        as trimming blank lines during the resize.
+     * @param newRows    The number of rows the screen should have.
+     * @param cursor     An int[2] containing the current cursor location; if the
+     *                   resize succeeds, this will be updated with the new cursor
+     *                   location.  If null, don't do cursor-position-dependent tasks such
+     *                   as trimming blank lines during the resize.
      * @return Whether or not the resize succeeded.  If the resize failed,
-     *         the caller may "resize" the screen by copying out all the data
-     *         and placing it into a new transcript of the correct size.
+     * the caller may "resize" the screen by copying out all the data
+     * and placing it into a new transcript of the correct size.
      */
     public boolean resize(int newColumns, int newRows, int[] cursor) {
         if (newColumns != mColumns || newRows > mTotalRows) {
@@ -241,8 +241,8 @@ class UnicodeTranscript {
      * Block copy lines and associated metadata from one location to another
      * in the circular buffer, taking wraparound into account.
      *
-     * @param src The first line to be copied.
-     * @param len The number of lines to be copied.
+     * @param src   The first line to be copied.
+     * @param len   The number of lines to be copied.
      * @param shift The offset of the destination from the source.
      */
     private void blockCopyLines(int src, int len, int shift) {
@@ -284,9 +284,9 @@ class UnicodeTranscript {
      * Scroll the screen down one line. To scroll the whole screen of a 24 line
      * screen, the arguments would be (0, 24).
      *
-     * @param topMargin First line that is scrolled.
+     * @param topMargin    First line that is scrolled.
      * @param bottomMargin One line after the last line that is scrolled.
-     * @param style the style for the newly exposed line.
+     * @param style        the style for the newly exposed line.
      */
     public void scroll(int topMargin, int bottomMargin, int style) {
         // Separate out reasons so that stack crawls help us
@@ -295,7 +295,7 @@ class UnicodeTranscript {
             throw new IllegalArgumentException();
         }
 
-        if (topMargin < 0)  {
+        if (topMargin < 0) {
             throw new IllegalArgumentException();
         }
 
@@ -364,8 +364,8 @@ class UnicodeTranscript {
      *
      * @param sx source X coordinate
      * @param sy source Y coordinate
-     * @param w width
-     * @param h height
+     * @param w  width
+     * @param h  height
      * @param dx destination X coordinate
      * @param dy destination Y coordinate
      */
@@ -462,10 +462,10 @@ class UnicodeTranscript {
      * this is called with a "val" argument of 32 to clear a block of
      * characters.
      *
-     * @param sx source X
-     * @param sy source Y
-     * @param w width
-     * @param h height
+     * @param sx  source X
+     * @param sy  source Y
+     * @param w   width
+     * @param h   height
      * @param val value to set.
      */
     public void blockSet(int sx, int sy, int w, int h, int val, int style) {
@@ -484,7 +484,7 @@ class UnicodeTranscript {
     /**
      * Minimum API version for which we're willing to let Android try
      * rendering conjoining Hangul jamo as composed syllable blocks.
-     *
+     * <p>
      * This appears to work on Android 4.1.2, 4.3, and 4.4 (real devices only;
      * the emulator's broken for some reason), but not on 4.0.4 -- hence the
      * choice of API 16 as the minimum.
@@ -493,19 +493,19 @@ class UnicodeTranscript {
 
     /**
      * Gives the display width of the code point in a monospace font.
-     *
+     * <p>
      * Nonspacing combining marks, format characters, and control characters
      * have display width zero.  East Asian fullwidth and wide characters
      * have display width two.  All other characters have display width one.
-     *
+     * <p>
      * Known issues:
      * - Proper support for East Asian wide characters requires API >= 8.
      * - Assigning all East Asian "ambiguous" characters a width of 1 may not
-     *   be correct if Android renders those characters as wide in East Asian
-     *   context (as the Unicode standard permits).
+     * be correct if Android renders those characters as wide in East Asian
+     * context (as the Unicode standard permits).
      * - Isolated Hangul conjoining medial vowels and final consonants are
-     *   treated as combining characters (they should only be combining when
-     *   part of a Korean syllable block).
+     * treated as combining characters (they should only be combining when
+     * part of a Korean syllable block).
      *
      * @param codePoint A Unicode code point.
      * @return The display width of the Unicode code point.
@@ -523,15 +523,15 @@ class UnicodeTranscript {
         }
 
         switch (Character.getType(codePoint)) {
-        case Character.CONTROL:
-        case Character.FORMAT:
-        case Character.NON_SPACING_MARK:
-        case Character.ENCLOSING_MARK:
-            return 0;
+            case Character.CONTROL:
+            case Character.FORMAT:
+            case Character.NON_SPACING_MARK:
+            case Character.ENCLOSING_MARK:
+                return 0;
         }
 
         if ((codePoint >= 0x1160 && codePoint <= 0x11FF) ||
-            (codePoint >= 0xD7B0 && codePoint <= 0xD7FF)) {
+                (codePoint >= 0xD7B0 && codePoint <= 0xD7FF)) {
             if (AndroidCompat.SDK >= HANGUL_CONJOINING_MIN_SDK) {
                 /* Treat Hangul jamo medial vowels and final consonants as
                  * combining characters with width 0 to make jamo composition
@@ -554,16 +554,16 @@ class UnicodeTranscript {
         if (Character.charCount(codePoint) == 1) {
             // Android's getEastAsianWidth() only works for BMP characters
             switch (AndroidCharacterCompat.getEastAsianWidth((char) codePoint)) {
-            case AndroidCharacterCompat.EAST_ASIAN_WIDTH_FULL_WIDTH:
-            case AndroidCharacterCompat.EAST_ASIAN_WIDTH_WIDE:
-                return 2;
+                case AndroidCharacterCompat.EAST_ASIAN_WIDTH_FULL_WIDTH:
+                case AndroidCharacterCompat.EAST_ASIAN_WIDTH_WIDE:
+                    return 2;
             }
         } else {
             // Outside the BMP, only the ideographic planes contain wide chars
             switch ((codePoint >> 16) & 0xf) {
-            case 2: // Supplementary Ideographic Plane
-            case 3: // Tertiary Ideographic Plane
-                return 2;
+                case 2: // Supplementary Ideographic Plane
+                case 3: // Tertiary Ideographic Plane
+                    return 2;
             }
         }
 
@@ -585,7 +585,7 @@ class UnicodeTranscript {
     public static int charWidth(char[] chars, int index) {
         char c = chars[index];
         if (Character.isHighSurrogate(c)) {
-            return charWidth(c, chars[index+1]);
+            return charWidth(c, chars[index + 1]);
         } else {
             return charWidth(c);
         }
@@ -593,7 +593,7 @@ class UnicodeTranscript {
 
     /**
      * Get the contents of a line (or part of a line) of the transcript.
-     *
+     * <p>
      * The char[] array returned may be part of the internal representation
      * of the line -- make a copy first if you want to modify it.  The returned
      * array may be longer than the requested portion of the transcript; in
@@ -601,8 +601,8 @@ class UnicodeTranscript {
      * the contents of the rest of the array could potentially be garbage.
      *
      * @param row The row number to get (-mActiveTranscriptRows..mScreenRows-1)
-     * @param x1 The first screen position that's wanted
-     * @param x2 One after the last screen position that's wanted
+     * @param x1  The first screen position that's wanted
+     * @param x2  One after the last screen position that's wanted
      * @return A char[] array containing the requested contents
      */
     public char[] getLine(int row, int x1, int x2) {
@@ -617,7 +617,7 @@ class UnicodeTranscript {
     }
 
     private char[] getLine(int row, int x1, int x2, boolean strictBounds) {
-        if (row < -mActiveTranscriptRows || row > mScreenRows-1) {
+        if (row < -mActiveTranscriptRows || row > mScreenRows - 1) {
             throw new IllegalArgumentException();
         }
 
@@ -634,7 +634,7 @@ class UnicodeTranscript {
                 return (char[]) mLines[row];
             } else {
                 if (tmpLine == null || tmpLine.length < columns + 1) {
-                    tmpLine = new char[columns+1];
+                    tmpLine = new char[columns + 1];
                 }
                 int length = x2 - x1;
                 System.arraycopy(mLines[row], x1, tmpLine, 0, length);
@@ -674,7 +674,7 @@ class UnicodeTranscript {
         int length = x2 - x1;
 
         if (tmpLine == null || tmpLine.length < length + 1) {
-            tmpLine = new char[length+1];
+            tmpLine = new char[length + 1];
         }
         System.arraycopy(rawLine, x1, tmpLine, 0, length);
         tmpLine[length] = 0;
@@ -695,7 +695,7 @@ class UnicodeTranscript {
     }
 
     private StyleRow getLineColor(int row, int x1, int x2, boolean strictBounds) {
-        if (row < -mActiveTranscriptRows || row > mScreenRows-1) {
+        if (row < -mActiveTranscriptRows || row > mScreenRows - 1) {
             throw new IllegalArgumentException();
         }
 
@@ -710,17 +710,17 @@ class UnicodeTranscript {
                 /* If either the start or the end column is in the middle of
                  * an East Asian wide character, include the appropriate column
                  * of style information */
-                if (x1 > 0 && line.findStartOfColumn(x1-1) == line.findStartOfColumn(x1)) {
+                if (x1 > 0 && line.findStartOfColumn(x1 - 1) == line.findStartOfColumn(x1)) {
                     --x1;
                 }
-                if (x2 < columns - 1 && line.findStartOfColumn(x2+1) == line.findStartOfColumn(x2)) {
+                if (x2 < columns - 1 && line.findStartOfColumn(x2 + 1) == line.findStartOfColumn(x2)) {
                     ++x2;
                 }
             }
             if (x1 == 0 && x2 == columns) {
                 return color;
             }
-            color.copy(x1, tmp, 0, x2-x1);
+            color.copy(x1, tmp, 0, x2 - x1);
             return tmp;
         } else {
             return null;
@@ -728,7 +728,7 @@ class UnicodeTranscript {
     }
 
     boolean isBasicLine(int row) {
-        if (row < -mActiveTranscriptRows || row > mScreenRows-1) {
+        if (row < -mActiveTranscriptRows || row > mScreenRows - 1) {
             throw new IllegalArgumentException();
         }
 
@@ -746,16 +746,16 @@ class UnicodeTranscript {
     /**
      * Get a character at a specific position in the transcript.
      *
-     * @param row The row of the character to get.
-     * @param column The column of the character to get.
+     * @param row       The row of the character to get.
+     * @param column    The column of the character to get.
      * @param charIndex The index of the character in the column to get
-     *  (0 for the first character, 1 for the next, etc.)
-     * @param out The char[] array into which the character will be placed.
-     * @param offset The offset in the array at which the character will be placed.
+     *                  (0 for the first character, 1 for the next, etc.)
+     * @param out       The char[] array into which the character will be placed.
+     * @param offset    The offset in the array at which the character will be placed.
      * @return Whether or not there are characters following this one in the column.
      */
     public boolean getChar(int row, int column, int charIndex, char[] out, int offset) {
-        if (row < -mActiveTranscriptRows || row > mScreenRows-1) {
+        if (row < -mActiveTranscriptRows || row > mScreenRows - 1) {
             throw new IllegalArgumentException();
         }
         row = externalToInternalRow(row);
@@ -903,7 +903,7 @@ class FullUnicodeLine {
     private void commonConstructor(int columns) {
         mColumns = columns;
         mOffset = new short[columns];
-        mText = new char[(int)(SPARE_CAPACITY_FACTOR*columns)];
+        mText = new char[(int) (SPARE_CAPACITY_FACTOR * columns)];
     }
 
     public int getSpaceUsed() {
@@ -971,7 +971,7 @@ class FullUnicodeLine {
         if (wasExtraColForWideChar && column + 1 < columns) {
             oldLen = findStartOfColumn(column + 1) - pos;
         } else if (column + oldCharWidth < columns) {
-            oldLen = findStartOfColumn(column+oldCharWidth) - pos;
+            oldLen = findStartOfColumn(column + oldCharWidth) - pos;
         } else {
             oldLen = spaceUsed - pos;
         }
@@ -1073,7 +1073,7 @@ class FullUnicodeLine {
 
             ++shift;
         }
-        
+
         /*
          * Handle cases where we need to clobber the contents of the next
          * column in order to preserve column alignment

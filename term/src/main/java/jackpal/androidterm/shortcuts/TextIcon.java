@@ -13,7 +13,7 @@ public class TextIcon {
     ////////////////////////////////////////////////////////////
     public static Bitmap getTextIcon(String text, int color, int width, int height) {
         text = text.trim();
-        String lines[] = text.split("\\s*\n\\s*");
+        String[] lines = text.split("\\s*\n\\s*");
         int nLines = lines.length;
         Rect R = new Rect();
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -22,7 +22,7 @@ public class TextIcon {
         p.setSubpixelText(true);
         p.setTextSize(256);
         p.setTextAlign(Align.CENTER);
-        float HH[] = new float[nLines];
+        float[] HH = new float[nLines];
         float H = 0f;
         float W = 0f;
         for (int i = 0; i < nLines; ++i) {

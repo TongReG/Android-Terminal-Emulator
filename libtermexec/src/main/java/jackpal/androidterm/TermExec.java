@@ -3,6 +3,7 @@ package jackpal.androidterm;
 import android.annotation.TargetApi;
 import android.os.*;
 import android.support.annotation.NonNull;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -38,19 +39,23 @@ public class TermExec {
         this.environment = new Hashtable<>(System.getenv());
     }
 
-    public @NonNull List<String> command() {
+    public @NonNull
+    List<String> command() {
         return command;
     }
 
-    public @NonNull Map<String, String> environment() {
+    public @NonNull
+    Map<String, String> environment() {
         return environment;
     }
 
-    public @NonNull TermExec command(@NonNull String... command) {
+    public @NonNull
+    TermExec command(@NonNull String... command) {
         return command(new ArrayList<>(Arrays.asList(command)));
     }
 
-    public @NonNull TermExec command(List<String> command) {
+    public @NonNull
+    TermExec command(List<String> command) {
         command.clear();
         command.addAll(command);
         return this;
@@ -98,8 +103,7 @@ public class TermExec {
      */
     public static native void sendSignal(int processId, int signal);
 
-    static int createSubprocess(ParcelFileDescriptor masterFd, String cmd, String[] args, String[] envVars) throws IOException
-    {
+    static int createSubprocess(ParcelFileDescriptor masterFd, String cmd, String[] args, String[] envVars) throws IOException {
         final int integerFd;
 
         if (Build.VERSION.SDK_INT >= 12)

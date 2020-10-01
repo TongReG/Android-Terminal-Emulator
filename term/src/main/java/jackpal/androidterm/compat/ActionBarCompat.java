@@ -49,20 +49,35 @@ public abstract class ActionBarCompat {
     }
 
     public abstract int getDisplayOptions();
+
     public abstract int getHeight();
+
     public abstract int getNavigationItemCount();
+
     public abstract int getNavigationMode();
+
     public abstract int getSelectedNavigationIndex();
+
     public abstract CharSequence getTitle();
+
     public abstract void hide();
+
     public abstract boolean isShowing();
+
     public abstract void setDisplayOptions(int options);
+
     public abstract void setDisplayOptions(int options, int mask);
+
     public abstract void setListNavigationCallbacks(SpinnerAdapter adapter, OnNavigationListener callback);
+
     public abstract void setNavigationMode(int mode);
+
     public abstract void setSelectedNavigationItem(int position);
+
     public abstract void setTitle(int resId);
+
     public abstract void setTitle(CharSequence title);
+
     public abstract void show();
 }
 

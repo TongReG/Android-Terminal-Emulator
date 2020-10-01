@@ -45,7 +45,7 @@ public class WindowList extends ListActivity {
      * pressed.  This allows the window's entry to be pressed without the close
      * button being triggered.
      * Idea and code shamelessly borrowed from the Android browser's tabs list.
-     *
+     * <p>
      * Used by layout xml.
      */
     public static class CloseButton extends ImageView {
@@ -144,7 +144,7 @@ public class WindowList extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Intent data = new Intent();
-        data.putExtra(Term.EXTRA_WINDOW_ID, position-1);
+        data.putExtra(Term.EXTRA_WINDOW_ID, position - 1);
         setResult(RESULT_OK, data);
         finish();
     }
@@ -152,12 +152,12 @@ public class WindowList extends ListActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case ActionBarCompat.ID_HOME:
-            // Action bar home button selected
-            finish();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case ActionBarCompat.ID_HOME:
+                // Action bar home button selected
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

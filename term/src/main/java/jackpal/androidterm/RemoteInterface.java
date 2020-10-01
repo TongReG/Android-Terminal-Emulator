@@ -112,7 +112,7 @@ public class RemoteInterface extends Activity {
         String action = myIntent.getAction();
         if (action.equals(Intent.ACTION_SEND)
                 && myIntent.hasExtra(Intent.EXTRA_STREAM)) {
-          /* "permission.RUN_SCRIPT" not required as this is merely opening a new window. */
+            /* "permission.RUN_SCRIPT" not required as this is merely opening a new window. */
             Object extraStream = myIntent.getExtras().get(Intent.EXTRA_STREAM);
             if (extraStream instanceof Uri) {
                 String path = ((Uri) extraStream).getPath();
@@ -129,7 +129,7 @@ public class RemoteInterface extends Activity {
     }
 
     /**
-     *  Quote a string so it can be used as a parameter in bash and similar shells.
+     * Quote a string so it can be used as a parameter in bash and similar shells.
      */
     public static String quoteForBash(String s) {
         StringBuilder builder = new StringBuilder();
