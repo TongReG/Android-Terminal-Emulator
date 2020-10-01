@@ -40,8 +40,7 @@ import jackpal.androidterm.util.TermSettings;
 
 import java.util.UUID;
 
-public class TermService extends Service implements TermSession.FinishCallback
-{
+public class TermService extends Service implements TermSession.FinishCallback {
     /* Parallels the value of START_STICKY on API Level >= 5 */
     private static final int COMPAT_START_STICKY = 1;
 
@@ -56,6 +55,7 @@ public class TermService extends Service implements TermSession.FinishCallback
             return TermService.this;
         }
     }
+
     private final IBinder mTSBinder = new TSBinder();
 
     @Override
@@ -64,7 +64,7 @@ public class TermService extends Service implements TermSession.FinishCallback
 
     /* This should be @Override if building with API Level >=5 */
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return COMPAT_START_STICKY;
+        return START_STICKY_COMPATIBILITY;
     }
 
     @Override
@@ -93,17 +93,32 @@ public class TermService extends Service implements TermSession.FinishCallback
         compat = new ServiceForegroundCompat(this);
         mTermSessions = new SessionList();
 
-        /* Put the service in the foreground. */
-        Notification notification = new Notification(R.drawable.ic_stat_service_notification_icon, getText(R.string.service_notify_text), System.currentTimeMillis());
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
-        Intent notifyIntent = new Intent(this, Term.class);
-        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
-        notification.setLatestEventInfo(this, getText(R.string.application_terminal), getText(R.string.service_notify_text), pendingIntent);
-        compat.startForeground(RUNNING_NOTIFICATION, notification);
+        if (Build.VERSION.SDK_INT > 16) {
+            Intent notifyIntent = new Intent(this, Term.class);
+            notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Notification mNotification = new Notification.Builder(this)
+                    .setAutoCancel(true)
+                    .setContentTitle(getText(R.string.application_terminal))
+                    .setContentText(getText(R.string.service_notify_text))
+                    .setContentIntent(contentIntent)
+                    .setSmallIcon(R.drawable.ic_stat_service_notification_icon)
+                    .setWhen(System.currentTimeMillis())
+                    .build();
+            compat.startForeground(RUNNING_NOTIFICATION, mNotification);
+        }
+        if (Build.VERSION.SDK_INT <= 16) {
+            /* Put the service in the foreground. */
+            Notification notification = new Notification(R.drawable.ic_stat_service_notification_icon, getText(R.string.service_notify_text), System.currentTimeMillis());
+            notification.flags |= Notification.FLAG_ONGOING_EVENT;
+            Intent notifyIntent = new Intent(this, Term.class);
+            notifyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
+            //notification.setLatestEventInfo(this, getText(R.string.application_terminal), getText(R.string.service_notify_text), pendingIntent);
+            compat.startForeground(RUNNING_NOTIFICATION, notification);
+        }
 
         Log.d(TermDebug.LOG_TAG, "TermService started");
-        return;
     }
 
     @Override
@@ -117,7 +132,6 @@ public class TermService extends Service implements TermSession.FinishCallback
             session.finish();
         }
         mTermSessions.clear();
-        return;
     }
 
     public SessionList getSessions() {
@@ -149,7 +163,7 @@ public class TermService extends Service implements TermSession.FinishCallback
             if (pkgs == null || pkgs.length == 0)
                 return null;
 
-            for (String packageName:pkgs) {
+            for (String packageName : pkgs) {
                 try {
                     final PackageInfo pkgInfo = pm.getPackageInfo(packageName, 0);
 
@@ -191,7 +205,8 @@ public class TermService extends Service implements TermSession.FinishCallback
 
                         return result.getIntentSender();
                     }
-                } catch (PackageManager.NameNotFoundException ignore) {}
+                } catch (PackageManager.NameNotFoundException ignore) {
+                }
             }
 
             return null;

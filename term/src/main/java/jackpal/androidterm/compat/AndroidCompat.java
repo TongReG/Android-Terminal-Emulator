@@ -18,9 +18,11 @@ public class AndroidCompat {
 
     // The era of Holo Design
     public final static boolean V11ToV20;
+    public final static boolean V16ToV28;
 
     static {
         V11ToV20 = (SDK >= 11) && (SDK <= 20);
+        V16ToV28 = (SDK >= 16) && (SDK <= 28);
     }
 
     private final static int getSDK() {
@@ -30,7 +32,7 @@ public class AndroidCompat {
         } catch (VerifyError e) {
             // We must be at an SDK level less than 4.
             try {
-                result = Integer.valueOf(android.os.Build.VERSION.SDK);
+                result = Integer.parseInt(android.os.Build.VERSION.SDK);
             } catch (NumberFormatException e2) {
                 // Couldn't parse string, assume the worst.
                 result = 1;

@@ -341,7 +341,7 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
 
         Intent broadcast = new Intent(ACTION_PATH_BROADCAST);
         if (AndroidCompat.SDK >= 12) {
-            broadcast.addFlags(FLAG_INCLUDE_STOPPED_PACKAGES);
+            broadcast.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         }
         mPendingPathBroadcasts++;
         sendOrderedBroadcast(broadcast, PERMISSION_PATH_BROADCAST, mPathReceiver, null, RESULT_OK, null, null);
@@ -376,7 +376,7 @@ public class Term extends Activity implements UpdateCallback, SharedPreferences.
 
         PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TermDebug.LOG_TAG);
-        WifiManager wm = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+        WifiManager wm = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         int wifiLockMode = WifiManager.WIFI_MODE_FULL;
         if (AndroidCompat.SDK >= 12) {
             wifiLockMode = WIFI_MODE_FULL_HIGH_PERF;
